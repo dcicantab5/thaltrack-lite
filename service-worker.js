@@ -30,13 +30,27 @@ const ASSETS = [
   'https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js'
 ];
 
+// Fix: Adjust paths for GitHub Pages hosting
+function adjustGitHubPagesPath(item) {
+  const repoName = 'thaltrack-lite'; // replace with your actual repo name
+  if (location.hostname.includes('github.io') && item.startsWith('/')) {
+    return `/${repoName}${item}`;
+  }
+  return item;
+}
+
 // Install event - cache all static assets
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Caching app shell');
-        return cache.addAll(ASSETS);
+        // Fix: Adjust paths for GitHub Pages
+        const adjustedAssets = ASSETS.map(item => adjustGitHubPagesPath(item));
+        return cache.addAll(adjustedAssets);
+      })
+      .catch(error => {
+        console.error('Caching failed:', error);
       })
   );
 });
@@ -91,5 +105,8 @@ self.addEventListener('fetch', event => {
         });
       })
     );
+  } else {
+    // Pass through for non-cached resources
+    event.respondWith(fetch(event.request));
   }
 });
