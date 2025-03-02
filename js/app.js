@@ -16,7 +16,7 @@ if ('serviceWorker' in navigator) {
 // Constants and configuration
 const CONFIG = {
   // Replace with your Google Apps Script URL from Step 1
-  API_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbwYNz5LPkQvKC703IXbUJhxboSuGiGkocAhraRWzhchE1h0GdQqvBHp-Djg031PM19PIQ/exec',
   APP_VERSION: '1.0.0',
   STORAGE_KEYS: {
     USER_DATA: 'thaltrack_user_data',
