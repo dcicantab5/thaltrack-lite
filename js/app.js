@@ -96,7 +96,11 @@ const ThalTrackApp = {
   // Redirect to login if not authenticated
   requireAuth() {
     if (!this.isLoggedIn()) {
-      window.location.href = 'login.html';
+      // Fix: Check if we're already on the login page to prevent redirect loop
+      if (window.location.pathname !== '/login.html' && 
+          !window.location.pathname.endsWith('/login.html')) {
+        window.location.href = 'login.html';
+      }
       return false;
     }
     return true;
@@ -156,25 +160,39 @@ const ThalTrackApp = {
 
 // Initialize app on page load
 document.addEventListener('DOMContentLoaded', () => {
+  // Fix: Use a more robust way to check current page
+  const currentPath = window.location.pathname;
+  const basePath = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+  
   // Check if we're on a page that requires authentication
-  if (window.location.pathname !== '/index.html' && 
-      window.location.pathname !== '/' && 
-      window.location.pathname !== '/login.html') {
-    ThalTrackApp.requireAuth();
-    ThalTrackApp.updateUserDisplay();
+  if (basePath !== 'index.html' && 
+      basePath !== '' && 
+      basePath !== 'login.html') {
     
-    // Setup logout button
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        ThalTrackApp.clearUserData();
+    // Check auth but don't redirect in this function to avoid potential loops
+    const isAuthed = ThalTrackApp.isLoggedIn();
+    
+    if (isAuthed) {
+      ThalTrackApp.updateUserDisplay();
+      
+      // Setup logout button
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          ThalTrackApp.clearUserData();
+          window.location.href = 'login.html';
+        });
+      }
+    } else {
+      // Explicitly check current page isn't already login before redirecting
+      if (basePath !== 'login.html') {
         window.location.href = 'login.html';
-      });
+      }
     }
   }
   
   // If on dashboard, populate recent searches
-  if (window.location.pathname === '/dashboard.html') {
+  if (basePath === 'dashboard.html') {
     const recentSearchesTable = document.getElementById('recentSearchesTable');
     if (recentSearchesTable) {
       const searches = ThalTrackApp.getRecentSearches();
