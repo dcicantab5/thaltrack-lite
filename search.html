@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carian Pelajar - ThalTrack Lite</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="img/icon-192x192.png">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <img src="img/logo.png" alt="ThalTrack Lite Logo" height="30" class="d-inline-block align-top me-2">
+                ThalTrack Lite
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="search.html">Carian Pelajar</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span class="navbar-text me-3">
+                        <span id="userNameDisplay">Pengguna</span>
+                    </span>
+                    <button class="btn btn-sm btn-light" id="logoutBtn">Log Keluar</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h2>Carian Pelajar</h2>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="ic-tab" data-bs-toggle="tab" data-bs-target="#ic-search" type="button" role="tab" aria-controls="ic-search" aria-selected="true">Carian No. IC</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="name-tab" data-bs-toggle="tab" data-bs-target="#name-search" type="button" role="tab" aria-controls="name-search" aria-selected="false">Carian Nama</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qr-search" type="button" role="tab" aria-controls="qr-search" aria-selected="false">Imbas QR</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content mt-3" id="searchTabsContent">
+                    <!-- IC Search Tab -->
+                    <div class="tab-pane fade show active" id="ic-search" role="tabpanel" aria-labelledby="ic-tab">
+                        <form id="icSearchForm">
+                            <div class="mb-3">
+                                <label for="icNumber" class="form-label">Nombor Kad Pengenalan</label>
+                                <input type="text" class="form-control" id="icNumber" placeholder="cth: 040516-10-1234" required>
+                                <div class="form-text">Masukkan nombor IC termasuk tanda sengkang (-)</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Name Search Tab -->
+                    <div class="tab-pane fade" id="name-search" role="tabpanel" aria-labelledby="name-tab">
+                        <form id="nameSearchForm">
+                            <div class="mb-3">
+                                <label for="studentName" class="form-label">Nama Pelajar</label>
+                                <input type="text" class="form-control" id="studentName" placeholder="Masukkan nama pelajar" required>
+                                <div class="form-text">Masukkan sekurang-kurangnya 3 huruf</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </form>
+                    </div>
+                    
+                    <!-- QR Code Tab -->
+                    <div class="tab-pane fade" id="qr-search" role="tabpanel" aria-labelledby="qr-tab">
+                        <div class="text-center mb-3">
+                            <p>Gunakan kamera untuk mengimbas QR kod dari kad pelajar</p>
+                            <a href="qrcode.html" class="btn btn-primary">Buka Pengimbas QR</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Results -->
+        <div class="card d-none" id="searchResults">
+            <div class="card-header">
+                Hasil Carian
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nama Pelajar</th>
+                                <th>No. IC</th>
+                                <th>Sekolah</th>
+                                <th>Status</th>
+                                <th>Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable">
+                            <!-- Search results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noResults" class="alert alert-info d-none">
+                    Tiada rekod dijumpai.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>
