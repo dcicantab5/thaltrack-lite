@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maklumat Pelajar - ThalTrack Lite</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="img/icon-192x192.png">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <img src="img/logo.png" alt="ThalTrack Lite Logo" height="30" class="d-inline-block align-top me-2">
+                ThalTrack Lite
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="search.html">Carian Pelajar</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span class="navbar-text me-3">
+                        <span id="userNameDisplay">Pengguna</span>
+                    </span>
+                    <button class="btn btn-sm btn-light" id="logoutBtn">Log Keluar</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Maklumat Pelajar</h2>
+            <a href="javascript:history.back()" class="btn btn-secondary btn-sm">Kembali</a>
+        </div>
+        
+        <div id="loadingIndicator" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Memuat maklumat pelajar...</p>
+        </div>
+        
+        <div id="errorMessage" class="alert alert-danger d-none">
+            Ralat: Tidak dapat memuat maklumat pelajar. Sila cuba lagi.
+        </div>
+        
+        <div id="studentNotFound" class="alert alert-warning d-none">
+            Pelajar tidak dijumpai. Sila semak nombor kad pengenalan.
+        </div>
+        
+        <div id="studentDetails" class="d-none">
+            <!-- Student Personal Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    Maklumat Peribadi
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Nama:</strong> <span id="studentName">-</span></p>
+                            <p><strong>No. IC:</strong> <span id="studentIC">-</span></p>
+                            <p><strong>Tarikh Lahir:</strong> <span id="studentDOB">-</span></p>
+                            <p><strong>Jantina:</strong> <span id="studentGender">-</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Sekolah:</strong> <span id="studentSchool">-</span></p>
+                            <p><strong>Kelas:</strong> <span id="studentClass">-</span></p>
+                            <p><strong>Status:</strong> <span id="studentStatus" class="badge bg-secondary">-</span></p>
+                            <div class="mt-3">
+                                <button id="generateQRBtn" class="btn btn-sm btn-outline-primary">Jana QR Kod</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screening Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    Maklumat Saringan Thalasemia
+                </div>
+                <div class="card-body">
+                    <div id="noScreeningData" class="alert alert-info d-none">
+                        Tiada rekod saringan dijumpai untuk pelajar ini.
+                    </div>
+                    
+                    <div id="screeningData">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Tarikh Saringan:</strong> <span id="screeningDate">-</span></p>
+                                <p><strong>Keputusan:</strong> <span id="screeningResult">-</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Status Tindakan:</strong> <span id="actionStatus" class="badge bg-secondary">-</span></p>
+                                <p><strong>Tarikh Kemaskini:</strong> <span id="updateDate">-</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <p><strong>Catatan:</strong></p>
+                            <p id="screeningNotes" class="border p-2 rounded">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Update Action Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    Kemaskini Status Tindakan
+                </div>
+                <div class="card-body">
+                    <form id="updateStatusForm">
+                        <input type="hidden" id="screeningId" value="">
+                        
+                        <div class="mb-3">
+                            <label for="newStatus" class="form-label">Status Tindakan Baru</label>
+                            <select class="form-select" id="newStatus" required>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Belum Diproses">Belum Diproses</option>
+                                <option value="Dalam Proses">Dalam Proses</option>
+                                <option value="Rujuk Hospital">Rujuk Hospital</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newNotes" class="form-label">Catatan</label>
+                            <textarea class="form-control" id="newNotes" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Kemaskini Status</button>
+                    </form>
+                    
+                    <div id="updateSuccess" class="alert alert-success mt-3 d-none">
+                        Status berjaya dikemas kini!
+                    </div>
+                    
+                    <div id="updateError" class="alert alert-danger mt-3 d-none">
+                        Ralat: Tidak dapat mengemaskini status. Sila cuba lagi.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrCodeModalLabel">QR Kod Pelajar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="qrCodeImage"></div>
+                    <p class="mt-3" id="qrCodeName">-</p>
+                    <p id="qrCodeIC" class="small text-muted">-</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" id="downloadQRBtn">Muat Turun</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/detail.js"></script>
+</body>
+</html>
